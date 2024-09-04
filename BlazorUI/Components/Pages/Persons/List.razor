@@ -1,0 +1,67 @@
+﻿@inject IPersonApi PersonApi
+
+@page "/persons"
+@using Application.Shared.Dtos.Persons
+
+@inject NavigationManager NavigationManager
+
+<h3>List</h3>
+
+
+<button type="button" @onclick="CreatePerson" class="btn btn-primary">Create</button>
+
+@if (persons == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Address</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var person in persons)
+            {
+                <tr>
+                    <td>@person.Id</td>
+                    <td>@person.Name</td>
+                    <td>@person.Email</td>
+                    <td>@person.Phone</td>
+                    <td>@person.Address</td>
+                    <td>
+                        <button type="button" @onclick="@(()=>Edit(person.Id))" class="btn btn-primary">Edit</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+}
+
+
+@code {
+
+    private IReadOnlyList<PersonDto> persons;
+
+    protected override async Task OnInitializedAsync()
+    {
+        persons = await PersonApi.GetPersonsAsync();
+    }
+
+    void CreatePerson()
+    {
+        NavigationManager.NavigateTo("/persons/create");
+    }
+    void Edit(int id)
+    {
+        NavigationManager.NavigateTo($"/persons/{id}");
+    }
+}

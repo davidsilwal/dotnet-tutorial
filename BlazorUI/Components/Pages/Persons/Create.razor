@@ -1,0 +1,57 @@
+﻿@inject IPersonApi PersonApi
+@inject NavigationManager NavigationManager
+
+@page "/persons/create"
+@using Application.Shared.Dtos.Persons
+
+
+<h3>Create</h3>
+
+<EditForm Model="@personToCreate" OnValidSubmit="CreatePerson">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="personToCreate.Name" />
+        <ValidationMessage For="@(() => personToCreate.Name)" />
+    </div>
+
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="personToCreate.Email" />
+        <ValidationMessage For="@(() => personToCreate.Email)" />
+    </div>
+
+
+    <div class="form-group">
+        <label for="phone">Phone</label>
+        <InputText id="phone" class="form-control" @bind-Value="personToCreate.Phone" />
+        <ValidationMessage For="@(() => personToCreate.Phone)" />
+
+    </div>
+
+    <div class="form-group">
+        <label for="address">Address</label>
+        <InputText id="address" class="form-control" @bind-Value="personToCreate.Address" />
+        <ValidationMessage For="@(() => personToCreate.Address)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create</button>
+
+
+
+</EditForm>
+
+
+@code {
+
+    PersonToCreateDto personToCreate = new PersonToCreateDto();
+
+    private async Task CreatePerson()
+    {
+        await PersonApi.CreatePersonAsync(personToCreate);
+        NavigationManager.NavigateTo("/persons");
+    }
+}

@@ -1,0 +1,65 @@
+﻿@inject IPersonApi PersonApi
+@inject NavigationManager NavigationManager
+
+@page "/persons/{Id:int}"
+@using Application.Shared.Dtos.Persons
+
+<EditForm Model="@_personToUpdateDto" OnValidSubmit="UpdateAsync">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" class="form-control" @bind-Value="_personToUpdateDto.Name" />
+        <ValidationMessage For="@(() => _personToUpdateDto.Name)" />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <InputText id="email" class="form-control" @bind-Value="_personToUpdateDto.Email" />
+        <ValidationMessage For="@(() => _personToUpdateDto.Email)" />
+    </div>
+
+    <div class="form-group                    ">
+        <label for="phone">Phone</label>
+        <InputText id="phone" class="form-control" @bind-Value="_personToUpdateDto.Phone" />
+        <ValidationMessage For="@(() => _personToUpdateDto.Phone)" />
+    </div>
+
+    <div class="form-group                        ">
+        <label for="address">Address</label>
+        <InputText id="address" class="form-control" @bind-Value="_personToUpdateDto.Address" />
+        <ValidationMessage For="@(() => _personToUpdateDto.Address)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Update</button>
+
+</EditForm>
+
+
+@code {
+
+    PersonToUpdateDto _personToUpdateDto = new PersonToUpdateDto();
+
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var person = await PersonApi.GetPersonByIdAsync(Id);
+        _personToUpdateDto = new PersonToUpdateDto
+            {
+                Name = person.Name,
+                Email = person.Email,
+                Phone = person.Phone,
+                Address = person.Address
+            };
+    }
+
+    private async Task UpdateAsync()
+    {
+        await PersonApi.UpdatePersonAsync(Id, _personToUpdateDto);
+        NavigationManager.NavigateTo("/persons");
+    }
+}

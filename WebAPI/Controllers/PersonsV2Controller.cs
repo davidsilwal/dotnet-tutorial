@@ -1,7 +1,7 @@
-﻿using MediatR;
+﻿using Application.Features.Persons;
+using Application.Shared.Dtos.Persons;
+using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using WebAPI.Features.Persons;
-using WebAPI.Features.Persons.Dtos;
 
 namespace WebAPI.Controllers;
 
@@ -46,10 +46,10 @@ public class PersonsV2Controller(IMediator mediator) : ControllerBase
     }
 
 
-    [HttpPut("{id}")]
+    [HttpPatch("{id}")]
     [ProducesResponseType(404)]
     [ProducesResponseType(typeof(PersonDto), 200)]
-    public async Task<ActionResult<PersonDto>> UpdateAsync(int id, PersonToUpdateDto dto)
+    public async Task<ActionResult<PersonDto>> UpdateAsync(int id, [FromBody] PersonToUpdateDto dto)
     {
         var command = new UpdatePersonCommand { Id = id, PersonToUpdate = dto };
         var result = await mediator.Send(command);
