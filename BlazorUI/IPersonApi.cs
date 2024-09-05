@@ -1,8 +1,8 @@
-﻿using Application.Shared;
-using Application.Shared.Dtos.Persons;
+﻿using Application.Shared.Dtos.Persons;
 using Refit;
 
 namespace BlazorUI;
+
 public interface IPersonApi
 {
     [Get("/PersonsV2")]

@@ -2,6 +2,7 @@
 
 @page "/persons"
 @using Application.Shared.Dtos.Persons
+@using Microsoft.AspNetCore.Components.QuickGrid
 
 @inject NavigationManager NavigationManager
 
@@ -16,7 +17,18 @@
 }
 else
 {
-    <table class="table">
+
+    <QuickGrid Items="@persons">
+        <PropertyColumn Property="@(p => p.Name)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Email)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Phone)" Sortable="true" />
+        <PropertyColumn Property="@(p => p.Address)" Sortable="true" />
+        <TemplateColumn Title="Actions">
+            <button type="button" @onclick="@(()=>Edit(context.Id))" class="btn btn-primary">Edit</button>
+        </TemplateColumn>
+    </QuickGrid>
+
+    @* <table class="table">
         <thead>
             <tr>
                 <th>Id</th>
@@ -37,23 +49,22 @@ else
                     <td>@person.Phone</td>
                     <td>@person.Address</td>
                     <td>
-                        <button type="button" @onclick="@(()=>Edit(person.Id))" class="btn btn-primary">Edit</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
-
+ *@
 }
 
 
 @code {
 
-    private IReadOnlyList<PersonDto> persons;
+    private IQueryable<PersonDto> persons;
 
     protected override async Task OnInitializedAsync()
     {
-        persons = await PersonApi.GetPersonsAsync();
+        persons = (await PersonApi.GetPersonsAsync())?.AsQueryable();
     }
 
     void CreatePerson()
